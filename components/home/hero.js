@@ -161,10 +161,10 @@ const HeroSection = () => {
           <div className="relative h-[400px] lg:h-[500px]">
             <div className="absolute inset-0 flex items-center justify-center">
               {/* Phone */}
-              <div className="relative w-52 h-80 animate-float-medium">
+              <div className="relative w-62 h-100 animate-float-medium">
                 <div className={`absolute inset-0 ${colors.deviceBg} rounded-3xl shadow-2xl ${colors.deviceBorder} border overflow-hidden`}>
                   <Image
-                    src="/images/phone-screen.jpg"
+                    src="https://i.pinimg.com/1200x/63/f1/dc/63f1dc999e7260e929a0c1f33fd80afc.jpg"
                     alt="Phone with accessories"
                     fill
                     className="object-cover"
@@ -175,15 +175,15 @@ const HeroSection = () => {
               </div>
               
               {/* Laptop */}
-              <div className="absolute w-72 h-44 animate-float-slow">
+              <div className="absolute w-92 h-54 animate-float-slow">
                 <div className={`absolute inset-0 ${colors.deviceBg} rounded-xl shadow-2xl ${colors.deviceBorder} border overflow-hidden`}>
-                  <Image
-                    src="/images/laptop-screen.jpg"
-                    alt="Web development"
-                    fill
-                    className="object-cover"
-                    priority
-                  />
+                   <Image
+                      src="https://i.pinimg.com/736x/54/60/71/5460718577e51bb4f6e9427bd108233a.jpg"
+                        alt="Web development"
+                        fill
+                        className="object-cover"
+                        priority
+                      />
                 </div>
                 <div className={`absolute -bottom-4 left-1/2 w-4/5 h-4 ${currentTheme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} -translate-x-1/2 rounded-b-lg`} />
               </div>

@@ -251,7 +251,7 @@ const RepairServicesSection = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-yellow-500 to-green-500 rounded-xl shadow-lg p-8 md:p-12 text-center">
+        <div className="bg-green-500 rounded-xl shadow-lg p-8 md:p-12 text-center">
           <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Need Professional Repair Services?</h3>
           <p className="text-yellow-100 mb-6 max-w-2xl mx-auto">
             We offer quality repairs with warranty. All our technicians are certified and experienced.
