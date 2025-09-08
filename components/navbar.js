@@ -69,8 +69,15 @@ const Navbar = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="flex-shrink-0 flex items-center mr-3">
+            <Link href="/" aria-label="Home">
+              <img
+                src="/logo.jpg"
+                alt="Kaguje Logo"
+                className="h-10 w-auto rounded-md mr-2"
+                style={{ objectFit: 'contain' }}
+              />
+            </Link>
             <Link href="/" className="flex items-center" aria-label="Home">
               <span className="text-2xl font-bold text-yellow-500 dark:text-yellow-400">Kaguje</span>
               <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">TECH</span>

@@ -47,7 +47,7 @@ const products = [
     price: 15000,
     rating: 4.3,
     image: 'https://i.pinimg.com/736x/80/c6/30/80c6301f0807bbedf0cb150aea570847.jpg',
-    compatibleWith: ['iPhone 15 Series']
+    compatibleWith: ['iPhone All Series']
   },
   {
     id: 6,
@@ -67,7 +67,7 @@ const products = [
     price: 12000,
     rating: 4.0,
     image: 'https://i.pinimg.com/736x/e1/5c/78/e15c78f37ee0eca048782abaeef7fc74.jpg',
-    compatibleWith: ['iPhone']
+    compatibleWith: ['iPhone All Series']
   },
   {
     id: 8,
