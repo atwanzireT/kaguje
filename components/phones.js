@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import products from '@/phonesdata';
 
-
 const categories = [
   { id: 'all', name: 'All' },
   { id: 'cases', name: 'Cases' },
@@ -23,9 +22,26 @@ export default function PhoneAccessoriesSection() {
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     setMounted(true);
+    // Adjust items per page based on screen size
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerPage(8);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(12);
+      } else {
+        setItemsPerPage(15);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const filteredProducts = products.filter(product => {
@@ -34,6 +50,16 @@ export default function PhoneAccessoriesSection() {
     const priceMatch = product.price >= priceRange[0] && product.price <= priceRange[1];
     return categoryMatch && brandMatch && priceMatch;
   });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedBrand, priceRange]);
 
   const themeClasses = {
     light: {
@@ -69,6 +95,102 @@ export default function PhoneAccessoriesSection() {
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US').format(price);
+  };
+
+  // Pagination controls component
+  const PaginationControls = () => {
+    if (totalPages <= 1) return null;
+    
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    
+    return (
+      <div className="flex justify-center items-center mt-8 space-x-2">
+        {/* Previous button */}
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+          disabled={currentPage === 1}
+          className={`p-2 rounded-md ${themeStyles.border} border ${
+            currentPage === 1 
+              ? 'opacity-50 cursor-not-allowed' 
+              : `${themeStyles.hoverBg} cursor-pointer`
+          }`}
+          aria-label="Previous page"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        {/* First page */}
+        {startPage > 1 && (
+          <>
+            <button
+              onClick={() => setCurrentPage(1)}
+              className={`px-3 py-1 rounded-md ${themeStyles.border} border ${themeStyles.hoverBg}`}
+            >
+              1
+            </button>
+            {startPage > 2 && <span className={`px-1 ${themeStyles.secondaryText}`}>...</span>}
+          </>
+        )}
+        
+        {/* Page numbers */}
+        {pageNumbers.map(page => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`px-3 py-1 rounded-md border ${
+              currentPage === page
+                ? 'bg-yellow-500 text-white border-yellow-500'
+                : `${themeStyles.border} ${themeStyles.hoverBg}`
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        
+        {/* Last page */}
+        {endPage < totalPages && (
+          <>
+            {endPage < totalPages - 1 && <span className={`px-1 ${themeStyles.secondaryText}`}>...</span>}
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              className={`px-3 py-1 rounded-md ${themeStyles.border} border ${themeStyles.hoverBg}`}
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
+        
+        {/* Next button */}
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+          disabled={currentPage === totalPages}
+          className={`p-2 rounded-md ${themeStyles.border} border ${
+            currentPage === totalPages 
+              ? 'opacity-50 cursor-not-allowed' 
+              : `${themeStyles.hoverBg} cursor-pointer`
+          }`}
+          aria-label="Next page"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    );
   };
 
   if (!mounted) {
@@ -170,9 +292,14 @@ export default function PhoneAccessoriesSection() {
           </div>
         </div>
 
+        {/* Results count */}
+        <div className={`mb-4 text-sm ${themeStyles.secondaryText}`}>
+          Showing {Math.min(filteredProducts.length, startIndex + 1)}-{Math.min(filteredProducts.length, startIndex + itemsPerPage)} of {filteredProducts.length} products
+        </div>
+
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {filteredProducts.map((product) => (
+          {currentProducts.map((product) => (
             <div 
               key={product.id} 
               className={`group relative ${themeStyles.cardBg} border ${themeStyles.border} rounded-lg overflow-hidden ${themeStyles.shadow} ${themeStyles.hoverShadow} transition-all duration-300`}
@@ -229,6 +356,9 @@ export default function PhoneAccessoriesSection() {
             </div>
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        <PaginationControls />
 
         {/* Empty State */}
         {filteredProducts.length === 0 && (
